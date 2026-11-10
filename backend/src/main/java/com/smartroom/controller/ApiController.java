@@ -35,7 +35,12 @@ public class ApiController {
         HttpSession session = request.getSession(false);
         ApiException.require(session != null && session.getAttribute("userId") != null,
                 HttpStatus.UNAUTHORIZED, "Vui lòng đăng nhập");
-        return (int) session.getAttribute("userId");
+        int id = (int) session.getAttribute("userId");
+        if (!auth.userExists(id)) {
+            session.invalidate();
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Tài khoản không còn tồn tại, vui lòng đăng nhập lại");
+        }
+        return id;
     }
 
     private void csrf(HttpServletRequest request) {

@@ -17,7 +17,6 @@ public class SmartRoomRepository {
 
     @PostConstruct
     void init() {
-        db.execute("PRAGMA foreign_keys=ON");
         db.execute(
                 "CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, full_name TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'USER', created_at TEXT NOT NULL)");
         db.execute(
@@ -64,11 +63,15 @@ public class SmartRoomRepository {
 
     public List<Map<String, Object>> actions() {
         return db.queryForList(
-                "SELECT h.id,u.username,a.name AS actuatorName,a.type AS actuatorType,h.action,h.status,h.response_time_ms AS responseTimeMs,h.created_at AS createdAt,h.result FROM action_history h JOIN user u ON u.id=h.user_id JOIN actuator a ON a.id=h.actuator_id ORDER BY h.created_at DESC,h.id DESC");
+                "SELECT h.id,COALESCE(u.username,'Tài khoản đã xóa') AS username,a.name AS actuatorName,a.type AS actuatorType,h.action,h.status,h.response_time_ms AS responseTimeMs,h.created_at AS createdAt,h.result FROM action_history h LEFT JOIN user u ON u.id=h.user_id JOIN actuator a ON a.id=h.actuator_id ORDER BY h.created_at DESC,h.id DESC");
     }
 
     public Map<String, Object> profile(int id) {
         return db.queryForMap("SELECT id,printf('USR%03d',id) AS code,username,email,full_name AS fullName,role FROM user WHERE id=?", id);
+    }
+
+    public boolean userExists(int id) {
+        return db.queryForObject("SELECT count(*) FROM user WHERE id=?", Integer.class, id) > 0;
     }
 
     public List<Map<String, Object>> findUser(String login) {

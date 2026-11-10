@@ -41,6 +41,8 @@ public class AuthService {
 
     public Map<String, Object> profile(int id) { return repository.profile(id); }
 
+    public boolean userExists(int id) { return repository.userExists(id); }
+
     public Map<String, Object> updateProfile(int id, String name, String email) {
         ApiException.require(name != null && !name.isBlank() && name.length() <= 100, HttpStatus.BAD_REQUEST, "Họ tên không hợp lệ");
         ApiException.require(validEmail(email), HttpStatus.BAD_REQUEST, "Email không hợp lệ");

@@ -25,7 +25,7 @@ Tài liệu API tự sinh có tại `/swagger-ui.html` sau khi chạy backend.
 
 ## Thử API bằng Postman
 
-Import `postman/Smart-Room-IoT.postman_collection.json` vào Postman, dùng Desktop Agent để gọi `localhost`. Đặt collection variables `username` và `password` theo tài khoản đã đăng ký trên web, rồi chạy **01 Đăng nhập**. Postman tự giữ cookie phiên và script lưu CSRF token. Chạy Bật/Tắt đèn LED (D7) hoặc Bật/Tắt LED quạt (D6), sau đó xem **Lịch sử thao tác**: lệnh trả HTTP 202 khi được nhận, trạng thái `SUCCESS` chỉ xuất hiện khi ESP8266 xác nhận qua MQTT. Broker, backend và mạch phải đang chạy. Nếu backend dùng cổng khác 8080, đổi `baseUrl` trong collection. `localhost` luôn là máy chạy Postman; thầy cần chạy cả bộ trên cùng laptop hoặc cấu hình địa chỉ backend mà máy của thầy truy cập được.
+Import `postman/Smart-Room-IoT.postman_collection.json` vào Postman, dùng Desktop Agent để gọi `localhost`. Đặt collection variables `username` và `password` theo tài khoản đã đăng ký trên web, rồi chạy **01 Đăng nhập**. Postman tự giữ cookie phiên và script lưu CSRF token. Chạy Bật/Tắt đèn LED (D7) hoặc Bật/Tắt LED quạt (D6), sau đó xem **Lịch sử thao tác**: lệnh trả HTTP 202 khi được nhận, trạng thái `SUCCESS` chỉ xuất hiện khi ESP8266 xác nhận qua MQTT. Broker, backend và mạch phải đang chạy. Nếu backend dùng cổng khác 8080, đổi `baseUrl` trong collection. `localhost` luôn là máy chạy Postman. Để thầy gọi từ máy khác trong cùng LAN, chạy backend với `SERVER_ADDRESS=0.0.0.0 ./run.sh` và đặt `baseUrl=http://IP_LAPTOP:8080`; dùng tài khoản web và giữ máy, broker, ESP8266 đang chạy trong lúc demo.
 
 ## Luồng hoạt động
 

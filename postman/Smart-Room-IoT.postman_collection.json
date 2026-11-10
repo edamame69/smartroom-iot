@@ -1,0 +1,284 @@
+{
+  "info": {
+    "name": "Smart Room IoT — ESP8266 API",
+    "description": "Chạy Spring Boot + MQTT broker + ESP8266 trước. Dùng Postman Desktop Agent để truy cập localhost. Chạy Đăng nhập trước; cookie phiên và CSRF token được dùng cho lệnh điều khiển. LED D7=LIGHT, D6=FAN. Sau khi gửi lệnh, xem /api/actions để kiểm tra SUCCESS/FAILED sau tối đa 10 giây.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "username",
+      "value": ""
+    },
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "csrfToken",
+      "value": ""
+    },
+    {
+      "key": "lastActionId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Xác thực",
+      "item": [
+        {
+          "name": "01 Đăng nhập (chạy trước)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Đăng nhập thành công\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"csrfToken\", pm.response.json().token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hồ sơ đăng nhập",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/me"
+          }
+        },
+        {
+          "name": "Đăng xuất",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-SR-CSRF",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Thiết bị — thao tác vật lý",
+      "item": [
+        {
+          "name": "Danh sách thiết bị",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/actuators"
+          }
+        },
+        {
+          "name": "Bật đèn LED (D7)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-SR-CSRF",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/devices/LIGHT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"ON\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Lệnh được nhận\", function () { pm.response.to.have.status(202); });",
+                  "if (pm.response.code === 202) pm.collectionVariables.set(\"lastActionId\", pm.response.json().actionId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tắt đèn LED (D7)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-SR-CSRF",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/devices/LIGHT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"OFF\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Lệnh được nhận\", function () { pm.response.to.have.status(202); });",
+                  "if (pm.response.code === 202) pm.collectionVariables.set(\"lastActionId\", pm.response.json().actionId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bật LED quạt (D6)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-SR-CSRF",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/devices/FAN",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"ON\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Lệnh được nhận\", function () { pm.response.to.have.status(202); });",
+                  "if (pm.response.code === 202) pm.collectionVariables.set(\"lastActionId\", pm.response.json().actionId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Tắt LED quạt (D6)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-SR-CSRF",
+                "value": "{{csrfToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/devices/FAN",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"OFF\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Lệnh được nhận\", function () { pm.response.to.have.status(202); });",
+                  "if (pm.response.code === 202) pm.collectionVariables.set(\"lastActionId\", pm.response.json().actionId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dữ liệu và lịch sử",
+      "item": [
+        {
+          "name": "Trạng thái tổng hợp",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/state"
+          }
+        },
+        {
+          "name": "Cảm biến mới nhất",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sensors/latest"
+          }
+        },
+        {
+          "name": "Lịch sử cảm biến",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/sensors/history?page=1&limit=10"
+          }
+        },
+        {
+          "name": "Lịch sử thao tác",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/actions?page=1&limit=10"
+          }
+        },
+        {
+          "name": "Lọc thao tác thành công",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/actions?status=SUCCESS&page=1&limit=10"
+          }
+        },
+        {
+          "name": "Trạng thái ESP8266",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/iot-node/status"
+          }
+        }
+      ]
+    }
+  ]
+}

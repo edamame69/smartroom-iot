@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thông tin tài khoản - Smart Room IoT</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/profile.css"><link rel="stylesheet" href="css/redesign.css?v=profile2">
+</head>
+<body>
+  <div class="shell"><nav class="sidebar" id="sidebar" aria-label="Điều hướng chính"></nav>
+    <div class="work-area"><div id="topbar"></div>
+      <main class="shell-main profile-main">
+        <div class="section-intro"><div><span class="eyebrow">TÀI KHOẢN / HỒ SƠ</span>
+          <h2>Thông tin tài khoản</h2><p>Xem và chỉnh sửa thông tin tài khoản của bạn.</p></div></div>
+        <div class="profile-layout">
+          <section class="card profile-overview">
+            <div class="profile-banner"><span class="profile-avatar" id="avatar">?</span>
+              <span><strong id="cover-name">…</strong><small id="role-badge">QUẢN TRỊ</small></span></div>
+            <div class="profile-content"><div class="panel-heading"><div><span class="eyebrow">THÔNG TIN CÁ NHÂN</span>
+              <h3>Chi tiết tài khoản</h3></div></div>
+              <div class="profile-grid">
+                <div class="field"><label for="p-code">ID tài khoản</label><input class="input" id="p-code" readonly></div>
+                <div class="field"><label for="p-role">Vai trò</label><input class="input" id="p-role" readonly></div>
+                <div class="field"><label for="p-name">Họ và tên</label><input class="input" id="p-name" readonly maxlength="100">
+                  <div class="field-error" id="p-name-error"></div></div>
+                <div class="field"><label for="p-email">Email</label><input class="input" id="p-email" readonly maxlength="100">
+                  <div class="field-error" id="p-email-error"></div></div>
+              </div>
+              <div class="profile-actions" id="actions-view">
+                <button class="btn" type="button" id="btn-pass">Thay đổi mật khẩu</button>
+                <button class="btn btn-primary" type="button" id="btn-edit">Chỉnh sửa hồ sơ</button></div>
+              <div class="profile-actions hidden" id="actions-edit">
+                <button class="btn" type="button" id="btn-cancel">Hủy</button>
+                <button class="btn btn-primary" type="button" id="btn-save">Lưu thay đổi</button></div>
+            </div>
+          </section>
+          <section class="card resources-panel">
+            <div class="panel-heading"><div><span class="eyebrow">LIÊN KẾT</span><h3>Tài nguyên dự án</h3></div></div>
+            <p class="muted">Điền liên kết của chính bạn để mở nhanh khi trình bày.</p>
+            <div class="resource-list">
+              <label>GitHub <input class="input" type="url" id="link-github" placeholder="https://github.com/..."></label>
+              <label>Figma <input class="input" type="url" id="link-figma" placeholder="https://figma.com/..."></label>
+              <label>Postman <input class="input" type="url" id="link-postman" placeholder="https://postman.com/..."></label>
+            </div>
+            <div class="resource-actions"><button class="btn btn-primary" type="button" id="save-links">Lưu liên kết</button>
+              <button class="btn" type="button" id="open-link" disabled>Mở liên kết đang chọn ↗</button></div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <dialog id="pass-dialog"><form id="pass-form" novalidate>
+    <h3>Thay đổi mật khẩu</h3><p class="muted">Nhập mật khẩu hiện tại để xác nhận.</p>
+    <div id="pass-error" class="form-error hidden"></div>
+    <div class="field"><label for="d-current">Mật khẩu hiện tại</label><input class="input" type="password" id="d-current" autocomplete="current-password"><div class="field-error" id="d-current-error"></div></div>
+    <div class="field"><label for="d-new">Mật khẩu mới</label><input class="input" type="password" id="d-new" autocomplete="new-password"><div class="field-error" id="d-new-error"></div></div>
+    <div class="field"><label for="d-confirm">Xác nhận mật khẩu</label><input class="input" type="password" id="d-confirm" autocomplete="new-password"><div class="field-error" id="d-confirm-error"></div></div>
+    <div class="dialog-actions"><button class="btn" type="button" id="d-cancel">Hủy</button><button class="btn btn-primary" type="submit">Cập nhật</button></div>
+  </form></dialog>
+  <script src="js/utils.js"></script><script src="js/auth.js"></script><script src="js/api.js?v=live2"></script>
+  <script src="js/layout.js?v=profile2"></script><script src="js/profile.js?v=profile2"></script>
+</body>
+</html>

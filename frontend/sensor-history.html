@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dữ liệu cảm biến - Smart Room IoT</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/history.css"><link rel="stylesheet" href="css/redesign.css?v=clean1">
+</head>
+<body>
+  <div class="shell"><nav class="sidebar" id="sidebar" aria-label="Điều hướng chính"></nav>
+    <div class="work-area"><div id="topbar"></div>
+      <main class="shell-main history-main">
+        <div class="section-intro"><div><span class="eyebrow">DỮ LIỆU / CẢM BIẾN</span>
+          <h2>Lịch sử cảm biến</h2><p>Tra cứu theo giá trị hoặc thời gian đo từ năm đến giây.</p></div>
+          <span class="records-counter" id="total-chip">0 bản ghi</span></div>
+        <form id="search-form" class="card search-panel" novalidate>
+          <div class="search-grid">
+            <div class="field grow"><label for="keyword">Từ khóa tìm kiếm</label>
+              <div class="input-wrap"><i data-icon="search"></i>
+                <input class="input" type="text" id="keyword" maxlength="50" autocomplete="off"
+                  placeholder="Giá trị hoặc YYYY-MM-DD HH:mm:ss"></div></div>
+            <div class="field"><label for="search-type">Tìm theo</label>
+              <select class="select" id="search-type"><option value="ALL">Tất cả</option>
+                <option value="TEMPERATURE">Nhiệt độ</option><option value="HUMIDITY">Độ ẩm</option>
+                <option value="LIGHT">Ánh sáng</option><option value="TIME">Thời gian</option></select></div>
+            <button class="btn btn-primary" type="submit"><i data-icon="search"></i>Tìm kiếm</button>
+            <button class="btn" type="button" id="btn-reset"><i data-icon="refresh"></i>Đặt lại</button>
+          </div>
+          <div class="search-hint" id="precision-hint" aria-live="polite"></div>
+          <div class="field-error" id="keyword-error"></div>
+        </form>
+        <section class="card data-panel">
+          <div class="panel-heading"><div><span class="eyebrow">BẢNG DỮ LIỆU</span><h3>Bản ghi cảm biến</h3></div>
+            <span class="muted" id="count-text"></span></div>
+          <div class="table-scroll"><table class="table"><thead><tr>
+            <th>ID</th><th>Cảm biến</th><th>Giá trị</th><th>Thời gian đo</th>
+          </tr></thead><tbody id="tbody"></tbody></table></div>
+          <div class="table-foot"><div class="table-meta"><span id="range-text"></span>
+            <label class="page-size-label" for="page-size">Bản ghi/trang
+              <input class="input page-size" id="page-size" type="number" min="1" max="100" value="10" inputmode="numeric"></label></div>
+            <div class="pager" id="pager"></div></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="js/utils.js"></script><script src="js/auth.js"></script><script src="js/api.js?v=live2"></script>
+  <script src="js/layout.js?v=profile2"></script><script src="js/pager.js"></script><script src="js/sensor-history.js?v=live2"></script>
+</body>
+</html>

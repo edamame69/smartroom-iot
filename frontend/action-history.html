@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lịch sử hoạt động - Smart Room IoT</title>
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/base.css"><link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/history.css"><link rel="stylesheet" href="css/redesign.css?v=clean1">
+</head>
+<body>
+  <div class="shell"><nav class="sidebar" id="sidebar" aria-label="Điều hướng chính"></nav>
+    <div class="work-area"><div id="topbar"></div>
+      <main class="shell-main history-main">
+        <div class="section-intro"><div><span class="eyebrow">DỮ LIỆU / HOẠT ĐỘNG</span>
+          <h2>Lịch sử điều khiển</h2><p>Theo dõi lệnh bật/tắt, kết quả và thời gian phản hồi.</p></div>
+          <span class="records-counter" id="total-chip">0 hành động</span></div>
+        <form id="filter-form" class="card search-panel" novalidate>
+          <div class="search-grid action-search-grid">
+            <div class="field grow"><label for="f-time">Thời gian kích hoạt</label>
+              <div class="input-wrap"><i data-icon="clock"></i>
+                <input class="input" id="f-time" type="text" autocomplete="off" maxlength="30"
+                  placeholder="YYYY-MM-DD HH:mm:ss"></div></div>
+            <div class="field"><label for="f-actuator">Thiết bị</label><select class="select" id="f-actuator">
+              <option value="">Tất cả</option><option value="LIGHT">Đèn LED</option><option value="FAN">Quạt</option></select></div>
+            <div class="field"><label for="f-action">Hành động</label><select class="select" id="f-action">
+              <option value="">Tất cả</option><option value="ON">BẬT</option><option value="OFF">TẮT</option></select></div>
+            <div class="field"><label for="f-status">Trạng thái</label><select class="select" id="f-status">
+              <option value="">Tất cả</option><option value="SUCCESS">Thành công</option>
+              <option value="FAILED">Thất bại</option><option value="PENDING">Đang chờ</option></select></div>
+            <button class="btn btn-primary" type="submit"><i data-icon="search"></i>Tìm kiếm</button>
+            <button class="btn" type="button" id="btn-reset"><i data-icon="refresh"></i>Đặt lại</button>
+          </div>
+          <div class="search-hint" id="precision-hint" aria-live="polite"></div>
+          <div class="field-error" id="f-time-error"></div>
+        </form>
+        <section class="card data-panel">
+          <div class="panel-heading"><div><span class="eyebrow">NHẬT KÝ</span><h3>Hành động điều khiển</h3></div>
+            <span class="muted" id="count-text"></span></div>
+          <div class="table-scroll"><table class="table"><thead><tr>
+            <th>ID</th><th>Thiết bị</th><th>Hành động</th><th>Trạng thái</th>
+            <th>Thời gian kích hoạt</th><th>Phản hồi</th>
+          </tr></thead><tbody id="tbody"></tbody></table></div>
+          <div class="table-foot"><div class="table-meta"><span id="range-text"></span>
+            <label class="page-size-label" for="page-size">Bản ghi/trang
+              <input class="input page-size" id="page-size" type="number" min="1" max="100" value="10" inputmode="numeric"></label></div>
+            <div class="pager" id="pager"></div></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="js/utils.js"></script><script src="js/auth.js"></script><script src="js/api.js?v=live2"></script>
+  <script src="js/layout.js?v=profile2"></script><script src="js/pager.js"></script><script src="js/action-history.js?v=live2"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng nhập - Smart Room IoT</title>
+  <script src="js/theme.js?v=theme2"></script>
+  <link rel="stylesheet" href="css/base.css?v=theme2">
+  <link rel="stylesheet" href="css/login.css?v=theme2">
+  <link rel="stylesheet" href="css/redesign.css?v=authcenter1">
+</head>
+<body>
+  <button class="btn theme-toggle auth-theme-toggle" type="button" data-theme-toggle>Chế độ tối</button>
+  <main class="auth-page">
+    <aside class="auth-hero"><div class="auth-hero-top"><span class="auth-mark"><i data-icon="activity"></i></span>
+      <span><strong>SMART ROOM IOT</strong><small>Monitoring & Control</small></span></div>
+      <div class="auth-hero-copy"><span class="hero-pill">● HỆ THỐNG SMART ROOM IOT</span>
+        <h2>Không gian thông minh trong tầm tay bạn.</h2>
+        <p>Theo dõi cảm biến, điều khiển thiết bị và xem lịch sử trong một giao diện trực quan.</p>
+        <div class="hero-mini-grid"><span><small>THIẾT BỊ</small><strong>Đèn · Quạt</strong></span></div></div>
+    </aside>
+    <form class="auth-card" id="login-form" novalidate>
+      <div class="auth-logo"><i data-icon="home"></i></div>
+      <h1 class="auth-title">Đăng nhập hệ thống</h1>
+      <p class="auth-sub">Chào mừng bạn trở lại Smart Room IoT</p>
+
+      <div id="form-ok" class="form-ok hidden"></div>
+      <div id="form-error" class="form-error hidden"></div>
+
+      <div class="field">
+        <label for="username">Tên đăng nhập</label>
+        <div class="input-wrap">
+          <i data-icon="user"></i>
+          <input class="input" id="username" type="text" placeholder="Nhập tên đăng nhập" autocomplete="username">
+        </div>
+        <div class="field-error" id="username-error"></div>
+      </div>
+
+      <div class="field">
+        <label for="password">Mật khẩu</label>
+        <div class="input-wrap has-eye">
+          <i data-icon="lock"></i>
+          <input class="input" id="password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password">
+          <button type="button" class="toggle-eye" data-target="password" aria-label="Hiện/ẩn mật khẩu"></button>
+        </div>
+        <div class="field-error" id="password-error"></div>
+      </div>
+
+      <div class="auth-row">
+        <label class="check"><input type="checkbox" id="remember"> Ghi nhớ đăng nhập</label>
+        <a href="#" id="forgot">Quên mật khẩu?</a>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit" id="submit"><i data-icon="lock"></i>Đăng nhập</button>
+
+      <div class="auth-or">HOẶC</div>
+      <p class="auth-foot">Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+    </form>
+  </main>
+
+  <script src="js/utils.js?v=theme2"></script>
+  <script src="js/auth.js?v=theme2"></script>
+  <script src="js/api.js?v=live2"></script>
+  <script src="js/login.js?v=theme2"></script>
+</body>
+</html>

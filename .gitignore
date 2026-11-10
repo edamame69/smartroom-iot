@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+backend/data/
+backend/target/
+backend/smartroom-backend-*/
+.idea/
+.vscode/
+firmware/secrets.h
+**/secrets.h

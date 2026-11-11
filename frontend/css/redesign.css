@@ -145,6 +145,9 @@
 .resources-panel { display:flex; flex-direction:column; }.resources-panel p { margin-bottom:16px; }
 .resource-list { display:grid; gap:10px; }.resource-list label { display:grid; gap:5px; font-size:11px; font-weight:700; }
 .resource-list .input { height:38px; font-size:11px; }.resource-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:15px; }
+.report-download { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border:1px solid var(--border); border-radius:10px; color:var(--primary); background:var(--card); font-size:12px; font-weight:700; text-decoration:none; }
+.report-download:hover { background:var(--control-hover); text-decoration:none; }.report-download:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+.report-download strong,.report-download small { display:block; }.report-download strong { color:var(--text); }.report-download small { margin-top:3px; color:var(--muted); font-size:11px; font-weight:400; }
 .resource-actions .btn { font-size:11px; height:34px; }
 /* Login / register: split composition like reference, blue branding. */
 .auth-page { min-height:100vh; padding:0; display:grid; grid-template-columns:minmax(360px,1fr) minmax(420px,1fr); align-items:stretch; }

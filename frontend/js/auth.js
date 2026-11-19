@@ -43,10 +43,15 @@ const Auth = (() => {
     return true;
   }
 
-  function logout() {
-    if (token() && typeof Api !== 'undefined') Api.logout().catch(() => {});
-    clear();
-    location.replace('login.html');
+  async function logout() {
+    try {
+      if (token() && typeof Api !== 'undefined') await Api.logout();
+    } catch (_) {
+      // Token may already be expired or revoked.
+    } finally {
+      clear();
+      location.replace('login.html');
+    }
   }
 
   return { save, clear, token, user, setUser, isLoggedIn, requireLogin, logout };

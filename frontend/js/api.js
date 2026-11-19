@@ -15,7 +15,10 @@ const Api = (() => {
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401 && Auth.isLoggedIn() && path !== '/auth/login') Auth.logout();
+      if (response.status === 401 && Auth.isLoggedIn() && path !== '/auth/login') {
+        Auth.clear();
+        location.replace('login.html');
+      }
       throw new ApiError(response.status, result.message || 'Không thể kết nối máy chủ');
     }
     return result;

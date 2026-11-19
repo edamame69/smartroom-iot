@@ -17,7 +17,7 @@ Dự án được thực hiện cho bài tập lớn môn IoT. [Báo cáo cuối
 | Backend | Java 17+, Spring Boot 3.5.6, REST API |
 | Lưu trữ | SQLite tại `backend/data/smartroom.db` |
 | Truyền dữ liệu | MQTT broker trên cổng `1884` |
-| Mạch | ESP8266; DHT11 ở D2; ánh sáng ở A0; LED quạt D6; LED đèn D7; LED 3 D1; LED 4 D0 |
+| Mạch | ESP8266; DHT11 ở D2; ánh sáng ở A0; LED quạt D5; LED đèn D7; LED 3 D1; LED 4 D0 |
 
 Cảm biến ánh sáng cung cấp giá trị ADC trong khoảng `0–1023`; hệ thống không quy đổi sang lux. Chỉ số ngẫu nhiên `0–100%` là dữ liệu mô phỏng, không phải số đo vật lý.
 

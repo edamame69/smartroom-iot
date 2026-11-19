@@ -68,7 +68,7 @@ const char* LED4_STATUS_TOPIC = "smartroom/led4/status";
 #define DHTTYPE DHT11
 
 // LED xanh = FAN
-#define FAN_LED D6
+#define FAN_LED D5
 
 // LED trắng = LIGHT
 #define LIGHT_LED D7

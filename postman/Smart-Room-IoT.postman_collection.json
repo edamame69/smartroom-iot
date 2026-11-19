@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Smart Room IoT — ESP8266 API",
-    "description": "Chạy Spring Boot, MQTT broker và ESP8266 trước. Đăng nhập để lấy Bearer token; các API sau gửi Authorization: Bearer {{accessToken}}. Bốn LED: D6=FAN, D7=LIGHT, D1=LED3, D0=LED4. Lệnh trả HTTP 202; xem /api/actions để kiểm tra SUCCESS/FAILED sau tối đa 10 giây. Chỉ số RANDOM là dữ liệu mô phỏng do ESP8266 gửi.",
+    "description": "Chạy Spring Boot, MQTT broker và ESP8266 trước. Đăng nhập để lấy Bearer token; các API sau gửi Authorization: Bearer {{accessToken}}. Bốn LED: D5=FAN, D7=LIGHT, D1=LED3, D0=LED4. Lệnh trả HTTP 202; xem /api/actions để kiểm tra SUCCESS/FAILED sau tối đa 10 giây. Chỉ số RANDOM là dữ liệu mô phỏng do ESP8266 gửi.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -150,7 +150,7 @@
           ]
         },
         {
-          "name": "Bật LED quạt (D6)",
+          "name": "Bật LED quạt (D5)",
           "request": {
             "method": "POST",
             "header": [
@@ -179,7 +179,7 @@
           ]
         },
         {
-          "name": "Tắt LED quạt (D6)",
+          "name": "Tắt LED quạt (D5)",
           "request": {
             "method": "POST",
             "header": [

@@ -4,7 +4,7 @@
   Utils.hydrateIcons();
   const $ = id => document.getElementById(id);
   const state = { searchType: 'ALL', keyword: '', page: 1, limit: 10 };
-  const icon = { TEMPERATURE: 'thermometer', HUMIDITY: 'droplet', LIGHT: 'sun' };
+  const icon = { TEMPERATURE: 'thermometer', HUMIDITY: 'droplet', LIGHT: 'sun', RANDOM: 'sparkles' };
   function hint() {
     const type = $('search-type').value;
     const parsed = Utils.parseSmartDatetime($('keyword').value);

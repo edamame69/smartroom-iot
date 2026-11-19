@@ -41,7 +41,8 @@ public class MqttGateway implements MqttCallback {
                         }
                         next.connect(options);
                         next.subscribe(new String[] { "smartroom/sensor/temperature", "smartroom/sensor/humidity",
-                                "smartroom/sensor/light", "smartroom/fan/status", "smartroom/light/status" });
+                                "smartroom/sensor/light", "smartroom/sensor/random", "smartroom/fan/status",
+                                "smartroom/light/status", "smartroom/led3/status", "smartroom/led4/status" });
                         client = next;
                         System.out.println("MQTT connected: " + url);
                     }

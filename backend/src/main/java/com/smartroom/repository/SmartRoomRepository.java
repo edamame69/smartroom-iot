@@ -38,7 +38,8 @@ public class SmartRoomRepository {
         List<Object[]> sensors = List.of(
                 new Object[] { 1, "Nhiệt độ", "TEMPERATURE", "°C", "smartroom/sensor/temperature" },
                 new Object[] { 2, "Độ ẩm", "HUMIDITY", "%", "smartroom/sensor/humidity" },
-                new Object[] { 3, "Ánh sáng", "LIGHT", "ADC", "smartroom/sensor/light" });
+                new Object[] { 3, "Ánh sáng", "LIGHT", "ADC", "smartroom/sensor/light" },
+                new Object[] { 4, "Giá trị mô phỏng", "RANDOM", "%", "smartroom/sensor/random" });
         for (Object[] row : sensors)
             db.update(
                     "INSERT OR IGNORE INTO sensor(id,iot_node_id,name,type,unit,mqtt_topic,created_at) VALUES(?,1,?,?,?,?,?)",
@@ -48,6 +49,12 @@ public class SmartRoomRepository {
                 now);
         db.update(
                 "INSERT OR IGNORE INTO actuator(id,iot_node_id,name,type,mqtt_control_topic,mqtt_status_topic,updated_at) VALUES(2,1,'Quạt','FAN','smartroom/fan/control','smartroom/fan/status',?)",
+                now);
+        db.update(
+                "INSERT OR IGNORE INTO actuator(id,iot_node_id,name,type,mqtt_control_topic,mqtt_status_topic,updated_at) VALUES(3,1,'LED 3','LED3','smartroom/led3/control','smartroom/led3/status',?)",
+                now);
+        db.update(
+                "INSERT OR IGNORE INTO actuator(id,iot_node_id,name,type,mqtt_control_topic,mqtt_status_topic,updated_at) VALUES(4,1,'LED 4','LED4','smartroom/led4/control','smartroom/led4/status',?)",
                 now);
     }
 

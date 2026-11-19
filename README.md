@@ -1,12 +1,12 @@
 # Smart Room IoT
 
-Smart Room IoT là hệ thống giám sát nhiệt độ, độ ẩm, ánh sáng và điều khiển hai LED qua ESP8266. Dữ liệu được truyền bằng MQTT, lưu trong SQLite và hiển thị trên giao diện web sử dụng HTML, CSS, JavaScript thuần. Backend được xây dựng bằng Spring Boot.
+Smart Room IoT là hệ thống giám sát nhiệt độ, độ ẩm, ánh sáng và điều khiển bốn LED qua ESP8266. Dashboard hiển thị thêm một chỉ số ngẫu nhiên do ESP8266 tạo để mô phỏng cảm biến thứ tư. Dữ liệu được truyền bằng MQTT, lưu trong SQLite và hiển thị trên giao diện web sử dụng HTML, CSS, JavaScript thuần. Backend được xây dựng bằng Spring Boot.
 
 Dự án được thực hiện cho bài tập lớn môn IoT. [Báo cáo cuối cùng](frontend/documents/LeDucMinh-B23DCAT193-IOT.pdf) trình bày sơ đồ mạch, thiết kế dữ liệu và các luồng xử lý.
 
 ## Chức năng
 
-- Dashboard hiển thị số đo mới nhất, biểu đồ, trạng thái kết nối và trạng thái hai LED.
+- Dashboard hiển thị bốn thẻ chỉ số, biểu đồ riêng cho ba số đo thực và dữ liệu mô phỏng, trạng thái kết nối và bốn LED.
 - Trang lịch sử cho phép lọc dữ liệu cảm biến và thao tác bật/tắt.
 - Trang Người dùng hỗ trợ cập nhật hồ sơ, đổi mật khẩu, lưu liên kết dự án và tải báo cáo PDF.
 - Lịch sử điều khiển ghi nhận `PENDING`, `SUCCESS` và `FAILED`. Công tắc chỉ cập nhật sau khi ESP8266 xác nhận trạng thái thực tế.
@@ -17,9 +17,9 @@ Dự án được thực hiện cho bài tập lớn môn IoT. [Báo cáo cuối
 | Backend | Java 17+, Spring Boot 3.5.6, REST API |
 | Lưu trữ | SQLite tại `backend/data/smartroom.db` |
 | Truyền dữ liệu | MQTT broker trên cổng `1884` |
-| Mạch | ESP8266; DHT11 ở D2; cảm biến ánh sáng ở A0; LED quạt ở D6; LED đèn ở D7 |
+| Mạch | ESP8266; DHT11 ở D2; ánh sáng ở A0; LED quạt D6; LED đèn D7; LED 3 D1; LED 4 D5 |
 
-Ba LED tại D0, D1 và D5 được lắp dự phòng, chưa có chức năng điều khiển trên web. Cảm biến ánh sáng cung cấp giá trị ADC trong khoảng `0–1023`; hệ thống không quy đổi sang lux.
+LED tại D0 vẫn để dự phòng. Cảm biến ánh sáng cung cấp giá trị ADC trong khoảng `0–1023`; hệ thống không quy đổi sang lux. Chỉ số ngẫu nhiên `0–100%` là dữ liệu mô phỏng, không phải số đo vật lý.
 
 ## Yêu cầu và khởi chạy
 
@@ -55,9 +55,9 @@ ESP8266 sử dụng Wi-Fi 2,4 GHz. Địa chỉ broker trong firmware phải là
 
 ## Điều khiển và kiểm tra API
 
-ESP8266 gửi số đo lên `smartroom/sensor/temperature`, `smartroom/sensor/humidity` và `smartroom/sensor/light` khoảng mỗi 3 giây. Backend lưu số đo; Dashboard lấy dữ liệu qua `GET /api/state`.
+ESP8266 gửi nhiệt độ, độ ẩm, ánh sáng và giá trị mô phỏng lên các topic `smartroom/sensor/{temperature,humidity,light,random}` khoảng mỗi 3 giây. Backend lưu dữ liệu; Dashboard lấy dữ liệu qua `GET /api/state`.
 
-Lệnh bật/tắt được lưu với trạng thái `PENDING` và gửi tới `smartroom/{fan,light}/control`. ESP8266 phản hồi qua `smartroom/{fan,light}/status`. Phản hồi khớp trong 10 giây chuyển lệnh thành `SUCCESS`; hết thời hạn chuyển thành `FAILED`. Khi phản hồi đến sau thời hạn, lịch sử giữ bản ghi `FAILED` và thêm một bản ghi `SUCCESS`. Trạng thái thiết bị hiển thị theo phản hồi từ mạch.
+Lệnh bật/tắt được lưu với trạng thái `PENDING` và gửi tới `smartroom/{fan,light,led3,led4}/control`. ESP8266 phản hồi qua topic `status` tương ứng. Phản hồi khớp trong 10 giây chuyển lệnh thành `SUCCESS`; hết thời hạn chuyển thành `FAILED`. Khi phản hồi đến sau thời hạn, lịch sử giữ bản ghi `FAILED` và thêm một bản ghi `SUCCESS`. Trạng thái thiết bị hiển thị theo phản hồi từ mạch.
 
 API có thể được kiểm tra bằng [Postman collection](postman/Smart-Room-IoT.postman_collection.json) và Postman Desktop Agent. Biến `username`, `password` cần trùng với tài khoản đã đăng ký. Yêu cầu **01 Đăng nhập** thiết lập cookie phiên và CSRF token cho các yêu cầu tiếp theo. Các yêu cầu bật/tắt LED trả HTTP `202`; trạng thái kết quả nằm trong lịch sử thao tác. Nếu ứng dụng chạy ở cổng khác `8080`, cần cập nhật biến `baseUrl` của collection.
 

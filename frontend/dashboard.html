@@ -13,7 +13,7 @@
     <div class="work-area"><div id="topbar"></div>
       <main class="shell-main dashboard-main">
         <div class="section-intro"><div><span class="eyebrow">TỔNG QUAN PHÒNG THÔNG MINH</span>
-          <h2>Giám sát và điều khiển</h2><p>Theo dõi số đo và điều khiển hai LED qua ESP8266.</p></div>
+          <h2>Giám sát và điều khiển</h2><p>Bốn chỉ số môi trường và bốn LED qua ESP8266.</p></div>
           <span class="demo-notice"><span class="status-dot"></span> Dữ liệu từ ESP8266</span></div>
         <section class="metric-grid" aria-label="Chỉ số cảm biến">
           <article class="card metric-card metric-temp" id="card-temp">
@@ -31,25 +31,28 @@
             <div class="metric-value" id="v-light">--</div>
             <div class="metric-bottom"><span id="n-light">Chưa có dữ liệu</span><span>A0</span></div>
           </article>
+          <article class="card metric-card metric-random" id="card-random">
+            <div class="metric-top"><span>GIÁ TRỊ MÔ PHỎNG</span><span class="metric-icon"><i data-icon="sparkles"></i></span></div>
+            <div class="metric-value" id="v-random">--</div>
+            <div class="metric-bottom"><span id="n-random">Chưa có dữ liệu</span><span>ESP8266</span></div>
+          </article>
         </section>
-        <div class="dashboard-grid">
-          <section class="card device-panel">
-            <div class="panel-heading"><div><span class="eyebrow">THIẾT BỊ</span><h3>Điều khiển thiết bị</h3></div></div>
-            <div class="device-grid" id="devices"></div>
-            <p class="panel-footnote">Trạng thái chỉ đổi khi ESP8266 xác nhận lệnh qua MQTT.</p>
+        <div class="chart-grid">
+          <section class="card telemetry-panel">
+            <div class="panel-heading"><div><span class="eyebrow">DỮ LIỆU THỰC</span><h3>Nhiệt độ, độ ẩm và ánh sáng</h3></div>
+              <a class="subtle-link" href="sensor-history.html">Xem lịch sử →</a></div>
+            <div class="chart-box"><canvas id="climate-chart" aria-label="Biểu đồ nhiệt độ, độ ẩm và ánh sáng"></canvas></div>
           </section>
           <section class="card telemetry-panel">
-            <div class="panel-heading"><div><span class="eyebrow">DỮ LIỆU</span><h3>Biểu đồ cảm biến</h3></div>
-              <a class="subtle-link" href="sensor-history.html">Xem lịch sử →</a></div>
-            <div class="chart-tools" aria-label="Ẩn hoặc hiện đường biểu đồ">
-              <button type="button" class="chart-all active" id="show-all">Tất cả</button>
-              <button type="button" class="legend-toggle" data-dataset="0" style="--c:#2563eb" aria-pressed="true">Nhiệt độ</button>
-              <button type="button" class="legend-toggle" data-dataset="1" style="--c:#16a34a" aria-pressed="true">Độ ẩm</button>
-              <button type="button" class="legend-toggle" data-dataset="2" style="--c:#f59e0b" aria-pressed="true">Ánh sáng</button>
-            </div>
-            <div class="chart-box"><canvas id="live-chart" aria-label="Biểu đồ nhiệt độ, độ ẩm và ánh sáng"></canvas></div>
+            <div class="panel-heading"><div><span class="eyebrow">DỮ LIỆU MÔ PHỎNG</span><h3>Giá trị ngẫu nhiên</h3></div></div>
+            <div class="chart-box"><canvas id="ambient-chart" aria-label="Biểu đồ giá trị ngẫu nhiên mô phỏng"></canvas></div>
           </section>
         </div>
+        <section class="card device-panel">
+          <div class="panel-heading"><div><span class="eyebrow">THIẾT BỊ</span><h3>Điều khiển bốn LED</h3></div></div>
+          <div class="device-grid" id="devices"></div>
+          <p class="panel-footnote">Trạng thái chỉ đổi khi ESP8266 xác nhận lệnh qua MQTT.</p>
+        </section>
         <section class="card dashboard-recent">
           <div class="panel-heading"><div><span class="eyebrow">GẦN ĐÂY</span><h3>Lịch sử điều khiển mới nhất</h3></div>
             <a class="subtle-link" href="action-history.html">Xem tất cả →</a></div>

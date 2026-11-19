@@ -33,6 +33,8 @@ const char* HUMIDITY_TOPIC =
 const char* LIGHT_SENSOR_TOPIC =
   "smartroom/sensor/light";
 
+const char* RANDOM_SENSOR_TOPIC = "smartroom/sensor/random";
+
 
 // ---------- FAN ----------
 
@@ -51,6 +53,11 @@ const char* LIGHT_CONTROL_TOPIC =
 const char* LIGHT_STATUS_TOPIC =
   "smartroom/light/status";
 
+const char* LED3_CONTROL_TOPIC = "smartroom/led3/control";
+const char* LED3_STATUS_TOPIC = "smartroom/led3/status";
+const char* LED4_CONTROL_TOPIC = "smartroom/led4/control";
+const char* LED4_STATUS_TOPIC = "smartroom/led4/status";
+
 
 // =====================================================
 // PIN CONFIG
@@ -66,8 +73,10 @@ const char* LIGHT_STATUS_TOPIC =
 // LED trắng = LIGHT
 #define LIGHT_LED D7
 
-// Ba LED dự phòng, hiện chưa nhận lệnh MQTT.
-const uint8_t SPARE_LEDS[] = { D0, D1, D5 };
+// Hai LED bổ sung; D0 vẫn để dự phòng.
+#define LED3_PIN D1
+#define LED4_PIN D5
+const uint8_t SPARE_LEDS[] = { D0 };
 
 // Light Sensor
 #define LIGHT_SENSOR_PIN A0
@@ -90,8 +99,15 @@ PubSubClient mqttClient(wifiClient);
 
 unsigned long lastSensorPublish = 0;
 
-// Publish sensor data every 10 seconds
+// Publish sensor data every 3 seconds
 const unsigned long SENSOR_INTERVAL = 3000;
+
+void applyExtraLed(const String& topic, const String& message,
+                   const char* controlTopic, const char* statusTopic, uint8_t pin) {
+  if (topic != controlTopic || (message != "ON" && message != "OFF")) return;
+  digitalWrite(pin, message == "ON" ? HIGH : LOW);
+  mqttClient.publish(statusTopic, message.c_str(), true);
+}
 
 
 // =====================================================
@@ -305,6 +321,9 @@ void mqttCallback(
       );
     }
   }
+
+  applyExtraLed(String(topic), message, LED3_CONTROL_TOPIC, LED3_STATUS_TOPIC, LED3_PIN);
+  applyExtraLed(String(topic), message, LED4_CONTROL_TOPIC, LED4_STATUS_TOPIC, LED4_PIN);
 }
 
 
@@ -366,6 +385,9 @@ void connectMQTT() {
           LIGHT_CONTROL_TOPIC
         );
 
+      bool led3Subscribed = mqttClient.subscribe(LED3_CONTROL_TOPIC);
+      bool led4Subscribed = mqttClient.subscribe(LED4_CONTROL_TOPIC);
+
 
       // -------------------------------------------------
       // Print subscription result
@@ -386,6 +408,11 @@ void connectMQTT() {
       Serial.println(
         lightSubscribed ? "SUCCESS" : "FAILED"
       );
+
+      Serial.print("  "); Serial.print(LED3_CONTROL_TOPIC);
+      Serial.println(led3Subscribed ? " -> SUCCESS" : " -> FAILED");
+      Serial.print("  "); Serial.print(LED4_CONTROL_TOPIC);
+      Serial.println(led4Subscribed ? " -> SUCCESS" : " -> FAILED");
     }
 
 
@@ -607,6 +634,11 @@ void publishSensorData() {
     lightValue
   );
 
+  // Giá trị thứ tư là dữ liệu mô phỏng, không phải cảm biến vật lý.
+  char randomString[5];
+  snprintf(randomString, sizeof(randomString), "%ld", random(0, 101));
+  mqttClient.publish(RANDOM_SENSOR_TOPIC, randomString);
+
   Serial.println(
     "-----------------------"
   );
@@ -633,6 +665,7 @@ void setup() {
   // ===================================================
 
   dht.begin();
+  randomSeed(micros() ^ analogRead(LIGHT_SENSOR_PIN));
 
 
   // ===================================================
@@ -648,6 +681,9 @@ void setup() {
     LIGHT_LED,
     OUTPUT
   );
+
+  pinMode(LED3_PIN, OUTPUT);
+  pinMode(LED4_PIN, OUTPUT);
 
   for (uint8_t pin : SPARE_LEDS) {
     pinMode(pin, OUTPUT);
@@ -668,6 +704,9 @@ void setup() {
     LIGHT_LED,
     LOW
   );
+
+  digitalWrite(LED3_PIN, LOW);
+  digitalWrite(LED4_PIN, LOW);
 
 
   Serial.println();

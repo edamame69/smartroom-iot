@@ -35,7 +35,8 @@ public class RoomService {
         List<Map<String, Object>> rows = repository.sensors();
         return Map.of("temperature", rows.stream().filter(r -> r.get("type").equals("TEMPERATURE")).findFirst().orElse(Map.of()),
                 "humidity", rows.stream().filter(r -> r.get("type").equals("HUMIDITY")).findFirst().orElse(Map.of()),
-                "light", rows.stream().filter(r -> r.get("type").equals("LIGHT")).findFirst().orElse(Map.of()));
+                "light", rows.stream().filter(r -> r.get("type").equals("LIGHT")).findFirst().orElse(Map.of()),
+                "random", rows.stream().filter(r -> r.get("type").equals("RANDOM")).findFirst().orElse(Map.of()));
     }
 
     private static String displayTime(Object value) { return DISPLAY_TIME.format(Instant.parse((String) value)); }
@@ -58,7 +59,7 @@ public class RoomService {
     }
 
     public Map<String, Object> sensorHistory(String searchType, String keyword, int page, int limit) {
-        ApiException.require(List.of("ALL", "TIME", "TEMPERATURE", "HUMIDITY", "LIGHT").contains(searchType),
+        ApiException.require(List.of("ALL", "TIME", "TEMPERATURE", "HUMIDITY", "LIGHT", "RANDOM").contains(searchType),
                 HttpStatus.BAD_REQUEST, "Loại cảm biến không hợp lệ");
         String term = keyword.trim().toLowerCase();
         List<Map<String, Object>> rows = repository.sensors().stream().filter(r -> {
@@ -104,7 +105,8 @@ public class RoomService {
     }
 
     public Map<String, Object> command(int userId, String type, String state) {
-        ApiException.require(type.equals("FAN") || type.equals("LIGHT"), HttpStatus.BAD_REQUEST, "Thiết bị không hợp lệ");
+        ApiException.require(List.of("FAN", "LIGHT", "LED3", "LED4").contains(type),
+                HttpStatus.BAD_REQUEST, "Thiết bị không hợp lệ");
         ApiException.require(state != null && (state.equals("ON") || state.equals("OFF")),
                 HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ");
         ApiException.require(!repository.hasPending(type), HttpStatus.CONFLICT, "Thiết bị đang xử lý lệnh khác");

@@ -51,23 +51,25 @@
 .card { border-radius:16px; box-shadow:0 2px 12px rgba(22,42,79,.045); }
 
 /* Dashboard */
-.metric-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:15px; }
+.metric-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:15px; }
 .metric-card { position:relative; overflow:hidden; padding:17px 18px 14px; min-height:156px; }
 .metric-card::before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--metric); }
 .metric-temp { --metric:#2563eb; --metric-soft:var(--primary-soft); }.metric-hum { --metric:#16a34a; --metric-soft:var(--success-soft); }
 .metric-light { --metric:#f59e0b; --metric-soft:#fff6e6; }
+.metric-random { --metric:#8b5cf6; --metric-soft:#f2edff; }
 :root[data-theme="dark"] .metric-light { --metric-soft:#3d3020; }
+:root[data-theme="dark"] .metric-random { --metric-soft:#33264a; }
 .metric-top { display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.13em; }
 .metric-icon { width:37px; height:37px; display:grid; place-items:center; border-radius:10px; background:var(--metric-soft); color:var(--metric); }
 .metric-icon .icon { width:20px; height:20px; }.metric-value { font-size:30px; font-weight:800; letter-spacing:-.04em; margin:7px 0 10px; }
 .metric-value small { font-size:19px; font-weight:700; }.metric-bottom { border-top:1px solid var(--border); padding-top:9px;
   display:flex; justify-content:space-between; color:var(--muted); font-size:10px; }
 .metric-bottom span:first-child { color:var(--metric); font-weight:700; }
-.dashboard-grid { display:grid; grid-template-columns:minmax(330px,5fr) minmax(420px,7fr); gap:15px; align-items:stretch; }
-.device-panel,.telemetry-panel { min-height:390px; }.device-panel { display:flex; flex-direction:column; }
-.device-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; flex:1; align-items:stretch; }
+.chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; align-items:stretch; }
+.telemetry-panel { min-height:330px; }.device-panel { display:flex; flex-direction:column; margin-top:15px; }
+.device-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; flex:1; align-items:stretch; }
 .device-tile { display:flex; flex-direction:column; justify-content:space-between; border:1px solid var(--border); border-radius:13px; padding:14px;
-  background:var(--device-bg); min-height:229px; transition:background .2s,border-color .2s; }
+  background:var(--device-bg); min-height:190px; transition:background .2s,border-color .2s; }
 .device-tile.is-on { border-color:#a8c3ff; background:var(--primary-soft); }
 .device-top,.device-footer { display:flex; justify-content:space-between; align-items:center; }
 .device-symbol { display:grid; place-items:center; width:38px; height:38px; color:var(--muted); background:var(--table-head); border-radius:10px; }
@@ -120,10 +122,11 @@
 .copy-time:focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
 .sensor-name { display:inline-flex; align-items:center; gap:8px; font-weight:700; }
 .sensor-icon { width:25px; height:25px; display:grid; place-items:center; background:var(--table-head); border-radius:6px; color:var(--primary); }
-.sensor-icon .icon { width:14px; height:14px; }.sensor-humidity { color:var(--success); }.sensor-light { color:var(--warn); }
+.sensor-icon .icon { width:14px; height:14px; }.sensor-humidity { color:var(--success); }.sensor-light { color:var(--warn); }.sensor-random { color:#8b5cf6; }
 .value-tag,.action-tag,.status-badge { display:inline-flex; align-items:center; border-radius:7px; padding:4px 7px; font-size:10px; font-weight:800; }
 .value-tag { background:var(--primary-soft); color:var(--primary); font-variant-numeric:tabular-nums; }
 .tag-humidity { background:var(--success-soft); color:var(--success); }.tag-light { background:var(--metric-light-bg,#fff4dd); color:var(--warn); }
+.tag-random { background:#f2edff; color:#7c3aed; }:root[data-theme="dark"] .tag-random { background:#33264a; color:#c4b5fd; }
 :root[data-theme="dark"] .tag-light { --metric-light-bg:#3e3021; }
 .action-tag { background:var(--table-head); color:var(--muted); }.tag-on { background:var(--primary-soft); color:var(--primary); }
 .status-badge.st-success { background:var(--success-soft); color:var(--success); }
@@ -167,7 +170,7 @@
 .auth-logo { display:none; }.auth-title,.auth-sub { text-align:left; }.auth-title { font-size:28px; }
 .auth-sub { border:0; margin:6px 0 24px; padding:0; }.auth-page .auth-card .input { background:var(--card); }
 .auth-theme-toggle { top:17px; right:20px; }
-@media (max-width:1200px) { .dashboard-grid { grid-template-columns:1fr; }.action-search-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media (max-width:1200px) { .chart-grid { grid-template-columns:1fr; }.device-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.action-search-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
   .action-search-grid .grow { grid-column:span 3; } }
 @media (max-width:900px) { .shell { flex-direction:column; }.sidebar { position:static; min-height:0; height:auto; width:100%; padding:0; box-shadow:none; }
   .side-brand,.side-label,.side-bottom { display:none; }.side-links { display:flex; overflow-x:auto; flex:none; gap:4px; padding:6px 10px; }
@@ -179,7 +182,7 @@
 @media (max-width:650px) { .topbar-clock,.topbar-right .chip { display:none; }.topbar-heading h1 { font-size:15px; }
   .section-intro { align-items:flex-start; }.section-intro h2 { font-size:21px; }
   .metric-grid { grid-template-columns:1fr; gap:9px; }.metric-card { min-height:120px; }.metric-value { margin:1px 0 4px; }
-  .dashboard-grid { grid-template-columns:1fr; }.device-grid { grid-template-columns:1fr 1fr; }.device-tile { min-height:180px; }
+  .chart-grid { grid-template-columns:1fr; }.device-grid { grid-template-columns:1fr 1fr; }.device-tile { min-height:180px; }
   .recent-list { grid-template-columns:1fr; }.search-grid,.action-search-grid { grid-template-columns:1fr 1fr; }
   .search-grid .grow,.action-search-grid .grow { grid-column:1 / -1; }.search-grid .field:nth-child(2) { grid-column:1 / -1; }
   .action-search-grid .field:nth-child(2) { grid-column:auto; }.search-grid .btn { width:100%; }

@@ -29,10 +29,18 @@ public class TelemetryService {
                 if (!Double.isFinite(number)) return;
                 if (topic.endsWith("/humidity") && (number < 0 || number > 100)) return;
                 if (topic.endsWith("/light") && (number < 0 || number > 1023)) return;
+                if (topic.endsWith("/random") && (number < 0 || number > 100)) return;
                 if (topic.endsWith("/temperature") && (number < -40 || number > 80)) return;
                 repository.recordSensor(topic, number, now);
             } else if (topic.endsWith("/status") && (value.equals("ON") || value.equals("OFF"))) {
-                String type = topic.contains("/fan/") ? "FAN" : "LIGHT";
+                String type = switch (topic) {
+                    case "smartroom/fan/status" -> "FAN";
+                    case "smartroom/light/status" -> "LIGHT";
+                    case "smartroom/led3/status" -> "LED3";
+                    case "smartroom/led4/status" -> "LED4";
+                    default -> null;
+                };
+                if (type == null) return;
                 repository.recordReported(type, value, now);
                 List<Map<String, Object>> latest = repository.latestAction(type);
                 if (!retained && !latest.isEmpty() && value.equals(latest.get(0).get("action"))

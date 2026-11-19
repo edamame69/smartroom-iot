@@ -103,8 +103,8 @@ const Utils = (() => {
     return Number.isInteger(v) ? String(v) : String(Math.round(v * 10) / 10);
   }
 
-  const TYPE_LABEL = { TEMPERATURE: 'Nhiệt độ', HUMIDITY: 'Độ ẩm', LIGHT: 'Ánh sáng' };
-  const COLORS = { TEMPERATURE: '#2563eb', HUMIDITY: '#16a34a', LIGHT: '#f59e0b' };
+  const TYPE_LABEL = { TEMPERATURE: 'Nhiệt độ', HUMIDITY: 'Độ ẩm', LIGHT: 'Ánh sáng', RANDOM: 'Giá trị mô phỏng' };
+  const COLORS = { TEMPERATURE: '#2563eb', HUMIDITY: '#16a34a', LIGHT: '#f59e0b', RANDOM: '#8b5cf6' };
   const ACTION_LABEL = { ON: 'BẬT', OFF: 'TẮT' };
   const STATUS_LABEL = { SUCCESS: 'THÀNH CÔNG', PENDING: 'ĐANG CHỜ', FAILED: 'THẤT BẠI' };
   const STATUS_CLASS = { SUCCESS: 'st-success', PENDING: 'st-pending', FAILED: 'st-failed' };

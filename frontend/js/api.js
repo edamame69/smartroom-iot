@@ -52,8 +52,8 @@ const Api = (() => {
     counts: () => ({ sensors: data.sensors.length, actions: data.actions.length }),
     sensorsLatest() {
       const rows = newest(data.sensors);
-      return Object.fromEntries(['TEMPERATURE', 'HUMIDITY', 'LIGHT'].map(type => [
-        type === 'TEMPERATURE' ? 'temperature' : type === 'HUMIDITY' ? 'humidity' : 'light',
+      return Object.fromEntries(['TEMPERATURE', 'HUMIDITY', 'LIGHT', 'RANDOM'].map(type => [
+        type.toLowerCase(),
         rows.find(row => row.type === type) || null,
       ]));
     },
@@ -70,7 +70,7 @@ const Api = (() => {
           (!numeric && (row.name.toLowerCase().includes(query) || Utils.fmtDateTime(row.recordedAt).includes(query)));
         return valueMatches(row.value, query);
       });
-      const chart = ['TEMPERATURE', 'HUMIDITY', 'LIGHT'].flatMap(sensorType => rows.filter(row => row.type === sensorType).slice(0, 30).reverse());
+      const chart = ['TEMPERATURE', 'HUMIDITY', 'LIGHT', 'RANDOM'].flatMap(sensorType => rows.filter(row => row.type === sensorType).slice(0, 30).reverse());
       return { ...pageOf(rows, params), chart };
     },
     actuators: () => data.devices,

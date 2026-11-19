@@ -9,8 +9,8 @@ const Api = (() => {
   async function request(path, method = 'GET', body) {
     const response = await fetch('/api' + path, {
       method,
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'X-SR-CSRF': Auth.token() || '' },
+      credentials: 'omit',
+      headers: { 'Content-Type': 'application/json', ...(Auth.token() ? { Authorization: 'Bearer ' + Auth.token() } : {}) },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
     const result = await response.json().catch(() => ({}));

@@ -20,6 +20,8 @@ public class SmartRoomRepository {
         db.execute(
                 "CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, full_name TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'USER', created_at TEXT NOT NULL)");
         db.execute(
+                "CREATE TABLE IF NOT EXISTS auth_token (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE, expires_at TEXT NOT NULL, created_at TEXT NOT NULL)");
+        db.execute(
                 "CREATE TABLE IF NOT EXISTS iot_node (id INTEGER PRIMARY KEY, name TEXT NOT NULL, device_type TEXT NOT NULL, mac_address TEXT, is_online INTEGER NOT NULL DEFAULT 0, last_seen TEXT, created_at TEXT NOT NULL)");
         db.execute(
                 "CREATE TABLE IF NOT EXISTS sensor (id INTEGER PRIMARY KEY, iot_node_id INTEGER NOT NULL REFERENCES iot_node(id), name TEXT NOT NULL, type TEXT NOT NULL UNIQUE, unit TEXT NOT NULL, mqtt_topic TEXT NOT NULL UNIQUE, is_active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL)");
@@ -79,6 +81,23 @@ public class SmartRoomRepository {
 
     public boolean userExists(int id) {
         return db.queryForObject("SELECT count(*) FROM user WHERE id=?", Integer.class, id) > 0;
+    }
+
+    public void saveToken(String hash, int userId, String expiresAt, String now) {
+        db.update("DELETE FROM auth_token WHERE julianday(expires_at)<=julianday(?)", now);
+        db.update("INSERT INTO auth_token(token_hash,user_id,expires_at,created_at) VALUES(?,?,?,?)",
+                hash, userId, expiresAt, now);
+    }
+
+    public Integer tokenUser(String hash, String now) {
+        List<Integer> ids = db.queryForList(
+                "SELECT t.user_id FROM auth_token t JOIN user u ON u.id=t.user_id WHERE t.token_hash=? AND julianday(t.expires_at)>julianday(?)",
+                Integer.class, hash, now);
+        return ids.isEmpty() ? null : ids.get(0);
+    }
+
+    public void revokeToken(String hash) {
+        db.update("DELETE FROM auth_token WHERE token_hash=?", hash);
     }
 
     public List<Map<String, Object>> findUser(String login) {

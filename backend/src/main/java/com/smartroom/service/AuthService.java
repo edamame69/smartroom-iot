@@ -2,6 +2,12 @@ package com.smartroom.service;
 
 import com.smartroom.ApiException;
 import com.smartroom.repository.SmartRoomRepository;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -15,6 +21,7 @@ public class AuthService {
     private static final Pattern EMAIL = Pattern.compile("[^\\s@]+@[^\\s@]+\\.[^\\s@]+");
     private final SmartRoomRepository repository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final SecureRandom random = new SecureRandom();
 
     public AuthService(SmartRoomRepository repository) { this.repository = repository; }
 
@@ -37,6 +44,41 @@ public class AuthService {
         ApiException.require(!rows.isEmpty() && encoder.matches(password, (String) rows.get(0).get("password_hash")),
                 HttpStatus.UNAUTHORIZED, "Tài khoản hoặc mật khẩu không đúng");
         return ((Number) rows.get(0).get("id")).intValue();
+    }
+
+    private static String hash(String token) {
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(token.getBytes(java.nio.charset.StandardCharsets.US_ASCII)));
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 unavailable", e);
+        }
+    }
+
+    private static String bearer(String header) {
+        ApiException.require(header != null && header.startsWith("Bearer ")
+                && header.substring(7).matches("[0-9a-f]{64}"), HttpStatus.UNAUTHORIZED, "Vui lòng đăng nhập");
+        return header.substring(7);
+    }
+
+    public String issueToken(int userId) {
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+        String token = HexFormat.of().formatHex(bytes);
+        Instant now = Instant.now();
+        repository.saveToken(hash(token), userId, now.plus(7, ChronoUnit.DAYS).toString(), now.toString());
+        return token;
+    }
+
+    public int userIdFromBearer(String header) {
+        Integer id = repository.tokenUser(hash(bearer(header)), Instant.now().toString());
+        ApiException.require(id != null, HttpStatus.UNAUTHORIZED, "Token không hợp lệ hoặc đã hết hạn");
+        return id;
+    }
+
+    public void revokeBearer(String header) {
+        String token = bearer(header);
+        userIdFromBearer(header);
+        repository.revokeToken(hash(token));
     }
 
     public Map<String, Object> profile(int id) { return repository.profile(id); }

@@ -1,4 +1,4 @@
-/* Lưu token/phiên đăng nhập. "Ghi nhớ đăng nhập" -> localStorage, ngược lại sessionStorage. */
+/* Lưu Bearer token. "Ghi nhớ đăng nhập" -> localStorage, ngược lại sessionStorage. */
 const Auth = (() => {
   const TOKEN = 'sr_token';
   const USER = 'sr_user';

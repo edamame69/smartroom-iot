@@ -73,10 +73,9 @@ const char* LED4_STATUS_TOPIC = "smartroom/led4/status";
 // LED trắng = LIGHT
 #define LIGHT_LED D7
 
-// Hai LED bổ sung; D0 vẫn để dự phòng.
+// Hai LED bổ sung.
 #define LED3_PIN D1
-#define LED4_PIN D5
-const uint8_t SPARE_LEDS[] = { D0 };
+#define LED4_PIN D0
 
 // Light Sensor
 #define LIGHT_SENSOR_PIN A0
@@ -116,6 +115,16 @@ void applyExtraLed(const String& topic, const String& message,
 
 void connectWiFi() {
 
+  WiFi.mode(WIFI_STA);
+  int networkCount = WiFi.scanNetworks();
+  bool targetVisible = false;
+  for (int i = 0; i < networkCount; i++) {
+    if (WiFi.SSID(i) == WIFI_SSID) targetVisible = true;
+  }
+  WiFi.scanDelete();
+  Serial.print("Configured WiFi visible: ");
+  Serial.println(targetVisible ? "yes" : "no");
+
   Serial.print("Connecting to WiFi");
 
   WiFi.begin(
@@ -123,11 +132,16 @@ void connectWiFi() {
     WIFI_PASSWORD
   );
 
+  unsigned int attempts = 0;
   while (WiFi.status() != WL_CONNECTED) {
 
     delay(500);
 
     Serial.print(".");
+    if (++attempts % 20 == 0) {
+      Serial.print(" status=");
+      Serial.println(WiFi.status());
+    }
   }
 
   Serial.println();
@@ -684,12 +698,6 @@ void setup() {
 
   pinMode(LED3_PIN, OUTPUT);
   pinMode(LED4_PIN, OUTPUT);
-
-  for (uint8_t pin : SPARE_LEDS) {
-    pinMode(pin, OUTPUT);
-    digitalWrite(pin, LOW);
-  }
-
 
   // ===================================================
   // DEFAULT OFF

@@ -4,9 +4,6 @@ import com.smartroom.ApiException;
 import com.smartroom.service.AuthService;
 import com.smartroom.service.RoomService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import java.security.SecureRandom;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -18,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
     private final AuthService auth;
     private final RoomService room;
-    private final SecureRandom random = new SecureRandom();
 
     public ApiController(AuthService auth, RoomService room) {
         this.auth = auth;
@@ -32,22 +28,7 @@ public class ApiController {
     record Command(String state) { }
 
     private int user(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        ApiException.require(session != null && session.getAttribute("userId") != null,
-                HttpStatus.UNAUTHORIZED, "Vui lòng đăng nhập");
-        int id = (int) session.getAttribute("userId");
-        if (!auth.userExists(id)) {
-            session.invalidate();
-            throw new ApiException(HttpStatus.UNAUTHORIZED, "Tài khoản không còn tồn tại, vui lòng đăng nhập lại");
-        }
-        return id;
-    }
-
-    private void csrf(HttpServletRequest request) {
-        user(request);
-        ApiException.require(request.getHeader("X-SR-CSRF") != null
-                && request.getHeader("X-SR-CSRF").equals(request.getSession(false).getAttribute("csrf")),
-                HttpStatus.FORBIDDEN, "Phiên xác thực không hợp lệ");
+        return auth.userIdFromBearer(request.getHeader("Authorization"));
     }
 
     @PostMapping("/auth/register")
@@ -58,23 +39,15 @@ public class ApiController {
     }
 
     @PostMapping("/auth/login")
-    Map<String, Object> login(@RequestBody Credentials input, HttpServletRequest request) {
+    Map<String, Object> login(@RequestBody Credentials input) {
         ApiException.require(input != null, HttpStatus.BAD_REQUEST, "Vui lòng nhập tài khoản và mật khẩu");
         int id = auth.authenticate(input.username(), input.password());
-        HttpSession session = request.getSession(true);
-        request.changeSessionId();
-        byte[] bytes = new byte[32];
-        random.nextBytes(bytes);
-        String token = HexFormat.of().formatHex(bytes);
-        session.setAttribute("userId", id);
-        session.setAttribute("csrf", token);
-        return Map.of("token", token, "user", auth.profile(id));
+        return Map.of("token", auth.issueToken(id), "user", auth.profile(id));
     }
 
     @PostMapping("/auth/logout")
     Map<String, Object> logout(HttpServletRequest request) {
-        csrf(request);
-        request.getSession(false).invalidate();
+        auth.revokeBearer(request.getHeader("Authorization"));
         return Map.of("message", "Đã đăng xuất");
     }
 
@@ -82,14 +55,12 @@ public class ApiController {
 
     @PutMapping("/profile")
     Map<String, Object> update(@RequestBody Profile input, HttpServletRequest request) {
-        csrf(request);
         ApiException.require(input != null, HttpStatus.BAD_REQUEST, "Dữ liệu hồ sơ không hợp lệ");
         return auth.updateProfile(user(request), input.fullName(), input.email());
     }
 
     @PutMapping("/profile/password")
     Map<String, Object> password(@RequestBody PasswordChange input, HttpServletRequest request) {
-        csrf(request);
         ApiException.require(input != null, HttpStatus.BAD_REQUEST, "Dữ liệu mật khẩu không hợp lệ");
         auth.changePassword(user(request), input.current(), input.next());
         return Map.of("message", "Đã đổi mật khẩu");
@@ -117,7 +88,7 @@ public class ApiController {
     @PutMapping("/actuators/{id}/state")
     ResponseEntity<Map<String, Object>> actuatorCommand(@PathVariable int id, @RequestBody Command input,
             HttpServletRequest request) {
-        csrf(request);
+        user(request);
         ApiException.require(input != null, HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ");
         String type = (String) room.actuator(id).get("type");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(room.command(user(request), type, input.state()));
@@ -140,7 +111,7 @@ public class ApiController {
     @PostMapping("/devices/{type}")
     ResponseEntity<Map<String, Object>> command(@PathVariable String type, @RequestBody Command input,
             HttpServletRequest request) {
-        csrf(request);
+        user(request);
         ApiException.require(input != null, HttpStatus.BAD_REQUEST, "Trạng thái không hợp lệ");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(room.command(user(request), type, input.state()));
     }

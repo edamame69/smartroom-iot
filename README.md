@@ -17,9 +17,9 @@ Dự án được thực hiện cho bài tập lớn môn IoT. [Báo cáo cuối
 | Backend | Java 17+, Spring Boot 3.5.6, REST API |
 | Lưu trữ | SQLite tại `backend/data/smartroom.db` |
 | Truyền dữ liệu | MQTT broker trên cổng `1884` |
-| Mạch | ESP8266; DHT11 ở D2; ánh sáng ở A0; LED quạt D6; LED đèn D7; LED 3 D1; LED 4 D5 |
+| Mạch | ESP8266; DHT11 ở D2; ánh sáng ở A0; LED quạt D6; LED đèn D7; LED 3 D1; LED 4 D0 |
 
-LED tại D0 vẫn để dự phòng. Cảm biến ánh sáng cung cấp giá trị ADC trong khoảng `0–1023`; hệ thống không quy đổi sang lux. Chỉ số ngẫu nhiên `0–100%` là dữ liệu mô phỏng, không phải số đo vật lý.
+Cảm biến ánh sáng cung cấp giá trị ADC trong khoảng `0–1023`; hệ thống không quy đổi sang lux. Chỉ số ngẫu nhiên `0–100%` là dữ liệu mô phỏng, không phải số đo vật lý.
 
 ## Yêu cầu và khởi chạy
 
@@ -59,7 +59,7 @@ ESP8266 gửi nhiệt độ, độ ẩm, ánh sáng và giá trị mô phỏng l
 
 Lệnh bật/tắt được lưu với trạng thái `PENDING` và gửi tới `smartroom/{fan,light,led3,led4}/control`. ESP8266 phản hồi qua topic `status` tương ứng. Phản hồi khớp trong 10 giây chuyển lệnh thành `SUCCESS`; hết thời hạn chuyển thành `FAILED`. Khi phản hồi đến sau thời hạn, lịch sử giữ bản ghi `FAILED` và thêm một bản ghi `SUCCESS`. Trạng thái thiết bị hiển thị theo phản hồi từ mạch.
 
-API có thể được kiểm tra bằng [Postman collection](postman/Smart-Room-IoT.postman_collection.json) và Postman Desktop Agent. Biến `username`, `password` cần trùng với tài khoản đã đăng ký. Yêu cầu **01 Đăng nhập** thiết lập cookie phiên và CSRF token cho các yêu cầu tiếp theo. Các yêu cầu bật/tắt LED trả HTTP `202`; trạng thái kết quả nằm trong lịch sử thao tác. Nếu ứng dụng chạy ở cổng khác `8080`, cần cập nhật biến `baseUrl` của collection.
+API có thể được kiểm tra bằng [Postman collection](postman/Smart-Room-IoT.postman_collection.json) và Postman Desktop Agent. Biến `username`, `password` cần trùng với tài khoản đã đăng ký. Yêu cầu **01 Đăng nhập** lấy Bearer token; collection tự gửi `Authorization: Bearer {{accessToken}}` cho các yêu cầu tiếp theo. Token hết hạn sau 7 ngày và bị thu hồi khi đăng xuất. Các yêu cầu bật/tắt LED trả HTTP `202`; trạng thái kết quả nằm trong lịch sử thao tác. Nếu ứng dụng chạy ở cổng khác `8080`, cần cập nhật biến `baseUrl` của collection.
 
 Để truy cập từ máy khác trong cùng LAN, khởi động bằng `SERVER_ADDRESS=0.0.0.0 ./run.sh` và đặt `baseUrl` thành `http://IP_MAY_CHU:PORT`. Backend, broker và ESP8266 cần hoạt động trong suốt quá trình kiểm tra.
 
@@ -67,7 +67,7 @@ API có thể được kiểm tra bằng [Postman collection](postman/Smart-Room
 
 ```text
 backend/src/main/java/com/smartroom/
-  controller/   REST API, xác thực phiên và CSRF
+  controller/   REST API, xác thực Bearer token
   service/      Tài khoản, lệnh điều khiển, dữ liệu MQTT
   repository/   Khởi tạo SQLite và truy vấn lịch sử
   mqtt/         Kết nối broker, gửi và nhận bản tin

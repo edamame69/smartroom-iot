@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Smart Room IoT — ESP8266 API",
-    "description": "Chạy Spring Boot, MQTT broker và ESP8266 trước. Đăng nhập để lấy cookie phiên và CSRF token. Bốn LED: D6=FAN, D7=LIGHT, D1=LED3, D5=LED4. Lệnh trả HTTP 202; xem /api/actions để kiểm tra SUCCESS/FAILED sau tối đa 10 giây. Chỉ số RANDOM là dữ liệu mô phỏng do ESP8266 gửi.",
+    "description": "Chạy Spring Boot, MQTT broker và ESP8266 trước. Đăng nhập để lấy Bearer token; các API sau gửi Authorization: Bearer {{accessToken}}. Bốn LED: D6=FAN, D7=LIGHT, D1=LED3, D0=LED4. Lệnh trả HTTP 202; xem /api/actions để kiểm tra SUCCESS/FAILED sau tối đa 10 giây. Chỉ số RANDOM là dữ liệu mô phỏng do ESP8266 gửi.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -18,7 +18,7 @@
       "value": ""
     },
     {
-      "key": "csrfToken",
+      "key": "accessToken",
       "value": ""
     },
     {
@@ -44,6 +44,9 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "event": [
@@ -52,7 +55,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Đăng nhập thành công\", function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200) pm.collectionVariables.set(\"csrfToken\", pm.response.json().token);"
+                  "if (pm.response.code === 200) pm.collectionVariables.set(\"accessToken\", pm.response.json().token);"
                 ],
                 "type": "text/javascript"
               }
@@ -71,12 +74,7 @@
           "name": "Đăng xuất",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
-              }
-            ],
+            "header": [],
             "url": "{{baseUrl}}/api/auth/logout"
           }
         }
@@ -101,10 +99,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LIGHT",
@@ -134,10 +128,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LIGHT",
@@ -167,10 +157,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/FAN",
@@ -200,10 +186,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/FAN",
@@ -233,10 +215,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LED3",
@@ -266,10 +244,6 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LED3",
@@ -292,17 +266,13 @@
           ]
         },
         {
-          "name": "Bật LED 4 (D5)",
+          "name": "Bật LED 4 (D0)",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LED4",
@@ -325,17 +295,13 @@
           ]
         },
         {
-          "name": "Tắt LED 4 (D5)",
+          "name": "Tắt LED 4 (D0)",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "X-SR-CSRF",
-                "value": "{{csrfToken}}"
               }
             ],
             "url": "{{baseUrl}}/api/devices/LED4",
@@ -412,5 +378,15 @@
         }
       ]
     }
-  ]
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  }
 }
